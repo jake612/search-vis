@@ -1,6 +1,7 @@
 from flask import Flask, render_template, jsonify
 import re
 import requests
+from loadJSON import *
 app = Flask(__name__)
 
 @app.route('/')
@@ -19,7 +20,8 @@ def queryServer(query):
             "rows": "50"
         }
         r = requests.get(requestUrl, params=params)
-        return jsonify(r.json())
+        ret = loadJSONArray(r.json())
+        return jsonify(ret)
     return 'Error: Query can only contain letters and spaces'
 
     #except Exception as e:
