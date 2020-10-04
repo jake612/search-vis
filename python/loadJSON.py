@@ -34,11 +34,27 @@ def loadJSONArray(jsonResp):
         for idx, code in enumerate(codes):
             if len(code) < 4:
                 break
-            offset = idx + 1
-            while offset < len(codes):
-                if int(codes[offset][0]) - int(code[1]) <= 10:
-                    break
+            
+            offset = idx - 1
+            # Check backward 5
+            while offset > 0:
+                if int(code[0]) - int(codes[offset][1]) <= 5:
+                    link = (code[2], codes[offset][2])
+                    if code[2] < codes[offset][2]:
+                        link = (codes[offset][2], code[2])
+
+                    if link in links:
+                        links[link] += 1
+                    else:
+                        links[link] = 1
+                    offset -= 1
                 else:
+                    break
+
+            offset = idx + 1
+            # Check forward 5
+            while offset < len(codes):
+                if int(codes[offset][0]) - int(code[1]) <= 5:
                     link = (code[2], codes[offset][2])
                     if code[2] < codes[offset][2]:
                         link = (codes[offset][2], code[2])
@@ -48,5 +64,8 @@ def loadJSONArray(jsonResp):
                     else:
                         links[link] = 1
                     offset += 1
+                else:
+                    break
+
 
     return dictsToJSONResp(nodes, links)
