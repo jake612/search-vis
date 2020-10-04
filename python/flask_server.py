@@ -10,7 +10,6 @@ def homePage():
 
 @app.route('/<query>')
 def queryServer(query):
-    print(query)
     #Stry:
     if re.match("^[A-Za-z\s]+$", query):
         queryTerms = query.split(' ')
@@ -22,7 +21,9 @@ def queryServer(query):
         r = requests.get(requestUrl, params=params)
         ret = loadJSONArray(r.json())
         return jsonify(ret)
-    return 'Error: Query can only contain letters and spaces'
+    else:
+        print('here')
+        return 'Error: Query can only contain letters and spaces'
 
     #except Exception as e:
     #    return str(e)
