@@ -1,6 +1,7 @@
 from flask import Flask, render_template, jsonify
 import re
 import requests
+import pickle
 from loadJSON import *
 app = Flask(__name__)
 
@@ -18,11 +19,11 @@ def queryServer(query):
             "q": "{titleQueries} OR {abstractQueries}".format(titleQueries= " OR ".join(['title:' + i for i in queryTerms]), abstractQueries=" OR ".join(['abstract:' + i for i in queryTerms])).encode('utf-8'),
             "rows": "50"
         }
+        print(params)
         r = requests.get(requestUrl, params=params)
-        ret = loadJSONArray(r.json())
+        ret = loadJSONArray(r.json(), SNOMEDLinks)
         return jsonify(ret)
     else:
-        print('here')
         return 'Error: Query can only contain letters and spaces'
 
     #except Exception as e:
@@ -31,4 +32,5 @@ def queryServer(query):
     
 
 if __name__ == "__main__":
+    SNOMEDLinks = pickle.load(open('../data/edges.p', 'rb'))
     app.run(debug=True)

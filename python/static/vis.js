@@ -1,10 +1,27 @@
-const messagePattern = new RegExp('^[A-Za-z\s]+$');
+const messagePattern = new RegExp('^[A-Za-z0-9][A-Za-z0-9\\s]*$');
+
+function graphDetails(details, target){
+    console.log(details);
+    target.append("rect")
+        .style("width", "150")
+        .style("height", "100")
+        .style("fill", "rgb(50, 157, 168)")
+        .attr("x", details.x - 75)
+        .attr("y", details.y + 100 + details.r);
+
+    target.append("text")
+        .style("fill", "rgb(255, 255, 255)")
+        .attr("x", details.x)
+        .attr("y", details.y)
+        .text(details.name);
+}
 
 // Much of the code here derived from https://www.d3-graph-gallery.com/graph/network_basic.html
 function createGraph(data){
-    let svg = d3.select('#graph-canvas')
-    .attr('width', 800)
-    .attr('height', 800)
+    let svg = d3.select('#graph_canvas')
+    .call(d3.zoom().on("zoom", function () {
+        svg.attr("transform", d3.event.transform)
+    })) // found at https://coderwall.com/p/psogia/simplest-way-to-add-zoom-pan-on-d3-js
     .append('g');
 
     let link = svg
@@ -22,7 +39,8 @@ function createGraph(data){
     .append("circle")
     .attr("r", n=>Math.log(n.timesSeen)+1)
     .style("fill", "#69b3a2")
-    .on("mouseover", function(d){console.log(this); console.log(d)});
+    .on("mouseover", (d)=>graphDetails(d, svg));
+    //.on("mouseout", ()=>{d3.selectAll("rect").remove(); d3.selectAll("text").remove()});
 
     let simulation = d3.forceSimulation(data.nodes)        
       .force("link", d3.forceLink()                               
@@ -51,6 +69,7 @@ document.getElementById("submit").addEventListener('click', ()=>{
     errMsg = document.getElementById("err_msg");
     input = document.getElementById('query').value;
     if (!messagePattern.test(input)){
+        console.log(input);
         errMsg.innerHTML = 'Must be a valid query (only letters and spaces)';
     } else {
         errMsg.innerHTML = '';

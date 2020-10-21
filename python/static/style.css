@@ -6,3 +6,9 @@
 #err_msg {
     color: red;
 }
+
+#graph_canvas {
+    width: 100%;
+    height: 1000px;
+    border: 1px solid black;
+}
