@@ -11,4 +11,26 @@
     width: 100%;
     height: 1000px;
     border: 1px solid black;
+    position: relative;
+}
+
+#graph_position {
+    position: relative;
+    width: 100%;
+}
+
+#color_info {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    border: 1px solid black;
+    z-index: 1000;
+    background-color: white;
+}
+
+.data_control {
+    width: 100%;
+    height: 20px;
+    display: flex;
+    justify-content: flex-start;
 }

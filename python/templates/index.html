@@ -20,8 +20,19 @@
                     <button id="submit" class="button is-link">Submit</button>
                 </div>
             </div>
-            <p id="resp-output"></p>      
-            <svg id='graph_canvas'></svg>
+            <div class="data_control">
+                <p>PMI Thresh:</p>
+                <input id="thresh_num" type="number" value="1" step="0.1">
+                <button id="thresh_num_button">Update PMI</button>
+                <button id="ont_results">View Ontology Results</button>
+            </div>  
+            <div id="graph_position">
+                <div id="color_info">
+                    <p>hello world</p>
+                </div>
+                <svg id='graph_canvas'></svg>
+
+            </div>
             <script src="https://d3js.org/d3.v4.js"></script>
             <script src="/static/vis.js"></script>
         </div>
