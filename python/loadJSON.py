@@ -21,8 +21,7 @@ def dictsToJSONResp(nodes, links, overlap):
     # TODO: Make sorting more efficient (binary insertion instead of using sort function)
     return {
         "nodes": sorted([{"code": k, "timesSeen": v["timesSeen"], "name": v["name"], "type": v["type"]} for k, v in nodes.items()], key= lambda x: x["timesSeen"]),
-        "links": sorted([{"source": k[0], "target": k[1], "timesSeen": v , "pmi": calcPMI(nodes[k[0]], nodes[k[1]], v)} for k, v in links.items()], key= lambda x: x["pmi"]),
-        "overlap": [{"source": k[0], "target": k[1], "timesSeen": 1} for k in overlap]
+        "links": sorted([{"source": k[0], "target": k[1], "timesSeen": v , "pmi": calcPMI(nodes[k[0]], nodes[k[1]], v), "overlap": k in overlap} for k, v in links.items()], key= lambda x: x["pmi"])
     }
 
 # Main function called from flask_server to calculate nodal information
