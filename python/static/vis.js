@@ -3,6 +3,7 @@ const messagePattern = new RegExp('^[A-Za-z0-9][A-Za-z0-9\\s]*$');
 // Used for checking if valid graph done
 var isDisplayingGraph = false;
 var pmiThresh = 1;
+var termThresh = 1;
 var isOntGraph = false;
 
 let svg, node, link, simulation, graphData;
@@ -130,33 +131,43 @@ document.getElementById("submit").addEventListener('click', ()=>{
 
 });
 
-document.getElementById("thresh_num_button").addEventListener('click', ()=>{
+document.getElementById("link_thresh_num_button").addEventListener('click', ()=>{
     if (!isDisplayingGraph || isOntGraph) return;
-    let threshVal = Number(document.getElementById("thresh_num").value);
+    let threshVal = Number(document.getElementById("link_thresh_num").value);
     // working off https://bl.ocks.org/colbenkharrl/21b3808492b93a21de841bc5ceac4e47
     if (threshVal == pmiThresh) return;
-
-    lines = d3.selectAll("line").data(graphData).exit().style("stroke-opacity", l=>l.pmi < threshVal ? "0" : "1");
+    d3.selectAll("line").style("stroke-opacity", l=>l.pmi < threshVal ? "0" : "1");
 
     pmiThresh = threshVal;
-    simulation.restart();
 
 });
+
+document.getElementById("term_thresh_num_button").addEventListener('click', ()=>{
+    if (!isDisplayingGraph) return;
+    let threshVal = Number(document.getElementById("term_thresh_num").value);
+    // working off https://bl.ocks.org/colbenkharrl/21b3808492b93a21de841bc5ceac4e47
+    if (threshVal == termThresh) return;
+
+    d3.selectAll("circle").style("opacity", l=>l.timesSeen < threshVal ? "0" : "1");
+
+    termThresh = threshVal;
+
+});
+
 
 document.getElementById("ont_results").addEventListener('click', ()=>{
     if (!isDisplayingGraph) return;
     if (!isOntGraph){
         isOntGraph = true;
         document.getElementById("ont_results").innerText = "View query results";
-        lines = d3.selectAll("line").data(graphData).exit().style("stroke-opacity", l=>l.overlap === false ? "0" : "1");
+        d3.selectAll("line").style("stroke-opacity", l=>l.overlap === false ? "0" : "1");
 
     } else {
         isOntGraph = false;
         document.getElementById("ont_results").innerText = "View ontology results";
-        lines = d3.selectAll("line").data(graphData.links);
-        lines
+        lines = d3.selectAll("line")
             .style('stroke-width', l=>Math.log2(l.timesSeen)+1)
-            .style("stroke-opacity", l=>l.pmi < Number(document.getElementById("thresh_num").value) ? "0" : "1");
+            .style("stroke-opacity", l=>l.pmi < Number(document.getElementById("link_thresh_num").value) ? "0" : "1");
     }
 
 });
