@@ -11,13 +11,13 @@ let svg, node, link, simulation, graphData;
 function nodeColor(semanticType){
     switch(semanticType){
         case "ANAT":
-            return "rgb(41, 237, 31)";
+            return "rgb(41, 237, 31)"; // Green
         case "DISO":;
-            return "rgb(240, 53, 53)";
+            return "rgb(240, 53, 53)"; // Red
         case "PROC":
-            return "rgb(100, 97, 250)";
+            return "rgb(100, 97, 250)"; // Blue
         case "CHEM":
-            return "rgb(255, 239, 92)";
+            return "rgb(255, 239, 92)"; // yellow
         default:
             return "rgb(125, 122, 120)";
     }
