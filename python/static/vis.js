@@ -148,19 +148,13 @@ document.getElementById("ont_results").addEventListener('click', ()=>{
     if (!isOntGraph){
         isOntGraph = true;
         document.getElementById("ont_results").innerText = "View query results";
-        lines = d3.selectAll('line').data(graphData.overlap);
-        console.log(lines.exit());
-        lines.exit().style("stroke-opacity", "0");
-        lines.enter().style("stroke", "#aaa")
-        .style('stroke-width', "5")
-        .style("stroke-opacity", "1");
+        lines = d3.selectAll("line").data(graphData).exit().style("stroke-opacity", l=>l.overlap === false ? "0" : "1");
+
     } else {
         isOntGraph = false;
         document.getElementById("ont_results").innerText = "View ontology results";
         lines = d3.selectAll("line").data(graphData.links);
         lines
-            .append("line")
-            .style("stroke", "#aaa")
             .style('stroke-width', l=>Math.log2(l.timesSeen)+1)
             .style("stroke-opacity", l=>l.pmi < Number(document.getElementById("thresh_num").value) ? "0" : "1");
     }
