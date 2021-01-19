@@ -12,7 +12,7 @@ def queryServer(query):
     #Stry:
     if re.match("^[A-Za-z\s]+$", query):
         queryTerms = query.split(' ')
-        requestUrl = 'http://10.4.80.108:8983/solr/MEDLINEv6/query' # Hardcoded server address
+        requestUrl = 'http://10.4.80.108:8984/solr/MEDLINEv6/query' # Hardcoded server address
 
         # Query is built by taking each individual word in query and searching for it in the title or abstract field
         params = {
@@ -20,6 +20,10 @@ def queryServer(query):
             "rows": "50"
         }
         r = requests.get(requestUrl, params=params)
+        """
+        with open('../data/headache.txt') as headache_info:
+            data = json.load(headache_info)
+        """
         ret = loadJSONArray(r.json(), SNOMEDLinks, semanticTypes)
         return jsonify(ret)
     else:
