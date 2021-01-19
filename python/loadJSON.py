@@ -2,6 +2,7 @@
 import json
 import re
 import math
+import operator
 
 # Helper for properly splitting the abstract_snomed_ents field
 def stringToArr(string):
@@ -17,9 +18,10 @@ def calcPMI(node1, node2, timesSeen):
 
 # Format info for response
 def dictsToJSONResp(nodes, links, overlap):
+    # TODO: Make sorting more efficient (binary insertion instead of using sort function)
     return {
-        "nodes": [{"code": k, "timesSeen": v["timesSeen"], "name": v["name"], "type": v["type"]} for k, v in nodes.items()],
-        "links": [{"source": k[0], "target": k[1], "timesSeen": v , "pmi": calcPMI(nodes[k[0]], nodes[k[1]], v)} for k, v in links.items()],
+        "nodes": sorted([{"code": k, "timesSeen": v["timesSeen"], "name": v["name"], "type": v["type"]} for k, v in nodes.items()], key= lambda x: x["timesSeen"]),
+        "links": sorted([{"source": k[0], "target": k[1], "timesSeen": v , "pmi": calcPMI(nodes[k[0]], nodes[k[1]], v)} for k, v in links.items()], key= lambda x: x["pmi"]),
         "overlap": [{"source": k[0], "target": k[1], "timesSeen": 1} for k in overlap]
     }
 
@@ -96,5 +98,4 @@ def loadJSONArray(jsonResp, SNOMEDLinks, semanticTypes):
                     seenLinks.add(link)
                 offset += 1
 
-        print('process')
     return dictsToJSONResp(nodes, links, overlapLinks)
