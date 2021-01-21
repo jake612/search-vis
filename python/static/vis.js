@@ -120,6 +120,9 @@ document.getElementById("submit").addEventListener('click', ()=>{
     if (!messagePattern.test(input)){
         errMsg.innerHTML = 'Must be a valid query (only letters and spaces)';
     } else {
+        if (isDisplayingGraph){
+            d3.select("#graph_canvas").selectAll("*").remove();
+        }
         errMsg.innerHTML = '';
         fetch('http://127.0.0.1:5000/' + input)
         .then(resp=>{
