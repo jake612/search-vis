@@ -56,6 +56,12 @@ function graphDetails(details, target){
 function createGraph(data){
     graphData = data;
 
+    var linkThresh = document.getElementById("link_thresh_num");
+    linkThresh.setAttribute("min", graphData.links[0].pmi);
+    linkThresh.setAttribute("max", graphData.links[graphData.links.length - 1].pmi);
+
+    document.getElementById("term_thresh_num").setAttribute("max", graphData.nodes[graphData.nodes.length - 1].timesSeen);
+
     svg = d3.select('#graph_canvas')
         .call(d3.zoom().on("zoom", function () {
             svg.attr("transform", d3.event.transform)
@@ -139,9 +145,9 @@ document.getElementById("link_thresh_num").addEventListener('input', ()=>{
     // working off https://bl.ocks.org/colbenkharrl/21b3808492b93a21de841bc5ceac4e47
     if (threshVal == pmiThresh) return;
 
-    d3.selectAll("line").style("stroke-opacity", l=>l.pmi < pmiThresh ? "0" : "1");
+    d3.selectAll("line").style("stroke-opacity", l=> (hiddenSet.has(l.target)||hiddenSet.has(l.source)) || l.pmi < pmiThresh ? "0" : "1");
 
-    document.getElementById("pmi_seen").innerHTML = threshVal;
+    document.getElementById("pmi_seen").innerHTML = threshVal.toFixed(4);
     pmiThresh = threshVal;
 
 });
@@ -154,7 +160,7 @@ document.getElementById("term_thresh_num").addEventListener('input', ()=>{
 
     hiddenSet = new Set(graphData.nodes.filter(n=> n.timesSeen < threshVal));
     
-    d3.selectAll("line").style("stroke-opacity", l=> (hiddenSet.has(l.target) || hiddenSet.has(l.source))  ? "0" : "1");
+    d3.selectAll("line").style("stroke-opacity", l=> (hiddenSet.has(l.target) || hiddenSet.has(l.source)) || l.pmi < pmiThresh  ? "0" : "1");
     d3.selectAll("circle").style("opacity", l=>l.timesSeen < threshVal ? "0" : "1");
     document.getElementById("term_seen").innerHTML = threshVal;
     termThresh = threshVal;
