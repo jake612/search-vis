@@ -8,6 +8,8 @@ var isOntGraph = false;
 
 let svg, node, link, simulation, graphData;
 
+let hiddenSet = new Set();
+
 // Function which, when given the semantic category, returns the fill value to color the node
 function nodeColor(semanticType){
     switch(semanticType){
@@ -66,7 +68,7 @@ function createGraph(data){
         .enter()
         .append("line")
         .style("stroke", "#aaa")
-        .style('stroke-width', l=>Math.log2(l.timesSeen)+1)
+        .style('stroke-width', l=> Math.log(l.pmi + 5) + 1)
         .style("stroke-opacity", l=>l.pmi < pmiThresh ? "0" : "1");
 
     node = svg
@@ -131,25 +133,30 @@ document.getElementById("submit").addEventListener('click', ()=>{
 
 });
 
-document.getElementById("link_thresh_num_button").addEventListener('click', ()=>{
+document.getElementById("link_thresh_num").addEventListener('input', ()=>{
     if (!isDisplayingGraph || isOntGraph) return;
     let threshVal = Number(document.getElementById("link_thresh_num").value);
     // working off https://bl.ocks.org/colbenkharrl/21b3808492b93a21de841bc5ceac4e47
     if (threshVal == pmiThresh) return;
-    d3.selectAll("line").style("stroke-opacity", l=>l.pmi < threshVal ? "0" : "1");
 
+    d3.selectAll("line").style("stroke-opacity", l=>l.pmi < pmiThresh ? "0" : "1");
+
+    document.getElementById("pmi_seen").innerHTML = threshVal;
     pmiThresh = threshVal;
 
 });
 
-document.getElementById("term_thresh_num_button").addEventListener('click', ()=>{
+document.getElementById("term_thresh_num").addEventListener('input', ()=>{
     if (!isDisplayingGraph) return;
     let threshVal = Number(document.getElementById("term_thresh_num").value);
     // working off https://bl.ocks.org/colbenkharrl/21b3808492b93a21de841bc5ceac4e47
     if (threshVal == termThresh) return;
 
+    hiddenSet = new Set(graphData.nodes.filter(n=> n.timesSeen < threshVal));
+    
+    d3.selectAll("line").style("stroke-opacity", l=> (hiddenSet.has(l.target) || hiddenSet.has(l.source))  ? "0" : "1");
     d3.selectAll("circle").style("opacity", l=>l.timesSeen < threshVal ? "0" : "1");
-
+    document.getElementById("term_seen").innerHTML = threshVal;
     termThresh = threshVal;
 
 });
