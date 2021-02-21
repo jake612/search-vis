@@ -180,8 +180,16 @@ document.getElementById("term_thresh_num").addEventListener('input', ()=>{
     // Generate the set of hidden nodes based on if they are below the threshold
     hiddenNodeSet = new Set(graphData.nodes.filter(n=> n.timesSeen < threshVal));
     
-     // If either node is in the hidden set (see term_thresh_num function below) or has a pmi less that the thresh, it is set to transparent. Otherwise it is opaque
-    d3.selectAll("line").style("stroke-opacity", l=> (hiddenNodeSet.has(l.target) || hiddenNodeSet.has(l.source)) || l.pmi < pmiThresh  ? "0" : "1");
+    if (isOntGraph){
+        d3.selectAll("line")
+        .style('stroke-width', 8)
+        .style("stroke-opacity",  l=>  (hiddenNodeSet.has(l.target) || hiddenNodeSet.has(l.source)) || l.overlap === false ? "0" : "1");
+    } else {
+         // If either node is in the hidden set (see term_thresh_num function below) or has a pmi less that the thresh, it is set to transparent. Otherwise it is opaque
+        d3.selectAll("line").style("stroke-opacity", l=> (hiddenNodeSet.has(l.target) || hiddenNodeSet.has(l.source)) || l.pmi < pmiThresh  ? "0" : "1");
+
+    }
+    
 
     // Set node opacity
     d3.selectAll("circle").style("opacity", l=>l.timesSeen < threshVal ? "0" : "1");
