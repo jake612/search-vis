@@ -180,6 +180,7 @@ document.getElementById("term_thresh_num").addEventListener('input', ()=>{
     // Generate the set of hidden nodes based on if they are below the threshold
     hiddenNodeSet = new Set(graphData.nodes.filter(n=> n.timesSeen < threshVal));
     
+
     if (isOntGraph){
         d3.selectAll("line")
         .style('stroke-width', 8)
@@ -190,6 +191,7 @@ document.getElementById("term_thresh_num").addEventListener('input', ()=>{
 
     }
     
+
 
     // Set node opacity
     d3.selectAll("circle").style("opacity", l=>l.timesSeen < threshVal ? "0" : "1");
